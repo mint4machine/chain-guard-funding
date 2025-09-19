@@ -1,4 +1,4 @@
-export const ChainGuardFundingABI = [
+export const contractABI = [
   {
     "inputs": [
       {
@@ -26,10 +26,10 @@ export const ChainGuardFundingABI = [
         "type": "address"
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "invoiceHash",
-        "type": "string"
+        "indexed": true,
+        "internalType": "address",
+        "name": "buyer",
+        "type": "address"
       }
     ],
     "name": "InvoiceCreated",
@@ -53,7 +53,7 @@ export const ChainGuardFundingABI = [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "requester",
+        "name": "supplier",
         "type": "address"
       }
     ],
@@ -71,15 +71,15 @@ export const ChainGuardFundingABI = [
       },
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "approver",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "invoiceId",
+        "type": "uint256"
       },
       {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "approvedAmount",
-        "type": "uint32"
+        "indexed": true,
+        "internalType": "address",
+        "name": "financier",
+        "type": "address"
       }
     ],
     "name": "FinancingApproved",
@@ -91,42 +91,23 @@ export const ChainGuardFundingABI = [
       {
         "indexed": true,
         "internalType": "uint256",
+        "name": "eventId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
         "name": "invoiceId",
         "type": "uint256"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "supplier",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "amount",
-        "type": "uint32"
-      }
-    ],
-    "name": "PaymentReleased",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "shipmentId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "verifier",
+        "name": "reporter",
         "type": "address"
       }
     ],
-    "name": "SupplyChainVerified",
+    "name": "SupplyChainEventRecorded",
     "type": "event"
   },
   {
@@ -152,55 +133,142 @@ export const ChainGuardFundingABI = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "_amount",
         "type": "uint256"
-      }
-    ],
-    "name": "invoices",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "isEncrypted",
-        "type": "bool"
       },
       {
-        "internalType": "bool",
-        "name": "isApproved",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isPaid",
-        "type": "bool"
+        "internalType": "uint256",
+        "name": "_dueDate",
+        "type": "uint256"
       },
       {
         "internalType": "string",
-        "name": "invoiceHash",
+        "name": "_paymentTerms",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_invoiceHash",
         "type": "string"
       },
       {
         "internalType": "address",
-        "name": "supplier",
+        "name": "_buyer",
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "buyer",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "financier",
-        "type": "address"
-      },
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
+      }
+    ],
+    "name": "createInvoice",
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "createdAt",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_invoiceId",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "updatedAt",
+        "name": "_requestedAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_interestRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_requestHash",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
+      }
+    ],
+    "name": "requestFinancing",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_invoiceId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quantity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_qualityScore",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_deliveryTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_trackingHash",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
+      }
+    ],
+    "name": "recordSupplyChainEvent",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_invoiceId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getInvoiceAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -211,306 +279,15 @@ export const ChainGuardFundingABI = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "_invoiceId",
         "type": "uint256"
       }
     ],
-    "name": "financingRequests",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "isApproved",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isFunded",
-        "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "requestHash",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "requester",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "approver",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "createdAt",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "approvedAt",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "supplyChainData",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "isVerified",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isDelivered",
-        "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "trackingHash",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "supplier",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "buyer",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "createdAt",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "invoiceCounter",
+    "name": "getInvoiceStatus",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "requestCounter",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "shipmentCounter",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "verifier",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "invoiceId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getInvoiceInfo",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "invoiceHash",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "supplier",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "buyer",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "financier",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "isEncrypted",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isApproved",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isPaid",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "createdAt",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "updatedAt",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "requestId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getFinancingRequestInfo",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "requestHash",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "requester",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "approver",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "isApproved",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isFunded",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "createdAt",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "approvedAt",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "shipmentId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getSupplyChainInfo",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "trackingHash",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "supplier",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "buyer",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "isVerified",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isDelivered",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "createdAt",
         "type": "uint256"
       }
     ],
@@ -521,54 +298,16 @@ export const ChainGuardFundingABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "supplier",
+        "name": "_supplier",
         "type": "address"
       }
     ],
     "name": "getSupplierReputation",
     "outputs": [
       {
-        "internalType": "uint8",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "buyer",
-        "type": "address"
-      }
-    ],
-    "name": "getBuyerReputation",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "financier",
-        "type": "address"
-      }
-    ],
-    "name": "getFinancierReputation",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",

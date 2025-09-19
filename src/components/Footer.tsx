@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, ArrowRight, Lock, CheckCircle, Coins, Shield } from "lucide-react";
+import { FileText, ArrowRight, Lock, CheckCircle, Coins, Database, Globe, Building2 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.jpg";
 
 const Footer = () => {
@@ -97,8 +97,8 @@ const Footer = () => {
                 Confidential supply chain financing powered by blockchain technology
               </p>
               <div className="flex items-center space-x-2">
-                <Shield className="w-4 h-4 text-trust" />
-                <span className="text-xs text-trust">Encrypted & Secure</span>
+                <Database className="w-4 h-4 text-trust" />
+                <span className="text-xs text-trust">FHE Encrypted</span>
               </div>
             </div>
 

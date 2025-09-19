@@ -1,47 +1,47 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Lock, CheckCircle, Coins, Truck, Users, Shield, Zap, ArrowRight, Link } from "lucide-react";
+import { FileText, Lock, CheckCircle, Coins, Truck, Users, Database, Zap, ArrowRight, Link, Building2, Globe, Cpu, TrendingUp } from "lucide-react";
 
 const InvoiceFlow = () => {
   const mainSteps = [
     {
       icon: FileText,
-      title: "Request Financing",
-      description: "Supplier submits financing request with invoice details",
+      title: "Submit Invoice",
+      description: "Upload encrypted invoice with FHE protection",
       color: "text-muted-foreground",
-      details: "Upload invoice, set terms, connect wallet",
+      details: "Zero-knowledge data submission, secure wallet connection",
       bgColor: "bg-muted/10"
     },
     {
       icon: Lock,
-      title: "Encrypted Invoices", 
-      description: "Invoice data encrypted using zero-knowledge proofs",
+      title: "FHE Encryption", 
+      description: "Fully homomorphic encryption preserves data privacy",
       color: "text-gold",
-      details: "Data hidden until approval, maintaining confidentiality",
+      details: "Compute on encrypted data without decryption",
       bgColor: "bg-gold/10"
     },
     {
-      icon: Truck,
-      title: "Supply Chain Verification",
-      description: "Smart contracts verify delivery and goods authenticity",
+      icon: Cpu,
+      title: "AI Verification",
+      description: "Smart contracts with AI-powered verification",
       color: "text-trust",
-      details: "IoT sensors, delivery confirmation, quality assurance",
+      details: "IoT sensors, quality scoring, delivery confirmation",
       bgColor: "bg-trust/10"
     },
     {
-      icon: Link,
-      title: "Blockchain Settlement",
-      description: "Automated payment release through smart contracts",
+      icon: Zap,
+      title: "Instant Settlement",
+      description: "Automated blockchain payment execution",
       color: "text-accent",
-      details: "Instant, transparent, immutable transaction record",
+      details: "Real-time, transparent, immutable transactions",
       bgColor: "bg-accent/10"
     },
   ];
 
   const participants = [
-    { icon: Users, title: "Suppliers", desc: "Upload invoices securely" },
-    { icon: Shield, title: "Buyers", desc: "Verify without exposure" },
-    { icon: Coins, title: "Financiers", desc: "Fund with confidence" },
+    { icon: Users, title: "Suppliers", desc: "Submit encrypted invoices" },
+    { icon: Building2, title: "Enterprises", desc: "Verify without data exposure" },
+    { icon: TrendingUp, title: "Financiers", desc: "Fund with complete confidence" },
   ];
 
   return (

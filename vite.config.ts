@@ -14,18 +14,18 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: {
-    outDir: 'dist',
-    sourcemap: false,
-    minify: 'terser',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          wallet: ['wagmi', '@rainbow-me/rainbowkit'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu']
+      build: {
+        outDir: 'dist',
+        sourcemap: false,
+        minify: 'esbuild',
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              vendor: ['react', 'react-dom'],
+              wallet: ['wagmi', '@rainbow-me/rainbowkit'],
+              ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu']
+            }
+          }
         }
       }
-    }
-  }
 });

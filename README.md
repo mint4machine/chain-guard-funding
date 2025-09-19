@@ -1,22 +1,24 @@
-# Chain Guard Funding
+# 🔗 Chain Guard Funding
 
-A confidential supply chain financing platform powered by blockchain technology and Fully Homomorphic Encryption (FHE).
+> **Revolutionary Supply Chain Finance with Zero-Knowledge Privacy**
 
-## Features
+Transform your supply chain financing with cutting-edge blockchain technology. Chain Guard Funding ensures complete data privacy while enabling seamless financial transactions across global supply networks.
 
-- **Encrypted Invoice Processing**: Invoice data is encrypted using zero-knowledge proofs until financing approval
-- **Supply Chain Verification**: Smart contracts verify delivery and goods authenticity
-- **Blockchain Settlement**: Automated payment release through smart contracts
-- **Reputation System**: Track supplier, buyer, and financier reputation scores
-- **Real-time Tracking**: Monitor supply chain data and financing status
+## ✨ Core Innovations
 
-## Technology Stack
+- **🔐 Zero-Knowledge Invoice Processing**: Your sensitive financial data remains encrypted until approval
+- **📦 Smart Supply Chain Verification**: AI-powered delivery confirmation and quality assurance
+- **⚡ Instant Blockchain Settlement**: Automated payments with immutable transaction records
+- **🏆 Dynamic Reputation Scoring**: Real-time assessment of all network participants
+- **📊 Live Supply Chain Monitoring**: Track every shipment with complete transparency
 
-- **Frontend**: React, TypeScript, Vite, Tailwind CSS
-- **Blockchain**: Ethereum, Wagmi, RainbowKit
-- **Encryption**: FHE (Fully Homomorphic Encryption)
-- **Smart Contracts**: Solidity with FHE support
-- **UI Components**: shadcn/ui, Radix UI
+## 🛠️ Advanced Technology Stack
+
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS
+- **Blockchain**: Ethereum Sepolia, Wagmi, RainbowKit
+- **Privacy**: FHE (Fully Homomorphic Encryption)
+- **Smart Contracts**: Solidity with Zama FHE integration
+- **UI/UX**: shadcn/ui, Radix UI, Lucide Icons
 
 ## Getting Started
 
@@ -47,7 +49,8 @@ cp .env.example .env
 # Edit .env with your configuration
 VITE_CHAIN_ID=11155111
 VITE_RPC_URL=https://1rpc.io/sepolia
-VITE_WALLET_CONNECT_PROJECT_ID=your_project_id
+VITE_WALLET_CONNECT_PROJECT_ID=your_wallet_connect_project_id
+VITE_INFURA_API_KEY=your_infura_api_key
 ```
 
 4. Start the development server:

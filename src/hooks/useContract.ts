@@ -1,105 +1,56 @@
-import { useContract, useContractRead, useContractWrite, useAccount } from 'wagmi';
-import { ChainGuardFundingABI } from '../lib/contractABI';
+import { useWriteContract, useReadContract } from 'wagmi';
+import { contractABI } from '../lib/contractABI';
 
-const CONTRACT_ADDRESS = '0x...'; // Replace with deployed contract address
+// Contract address - replace with your deployed contract address
+const CONTRACT_ADDRESS = "0xYourDeployedContractAddressHere" as `0x${string}`;
 
-export function useChainGuardContract() {
-  const { address } = useAccount();
-  
-  const contract = useContract({
+export const useCreateInvoice = () => {
+  return useWriteContract({
     address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
-  });
-
-  return {
-    contract,
-    address,
-  };
-}
-
-export function useCreateInvoice() {
-  const { contract } = useChainGuardContract();
-  
-  return useContractWrite({
-    address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
+    abi: contractABI,
     functionName: 'createInvoice',
   });
-}
+};
 
-export function useRequestFinancing() {
-  const { contract } = useChainGuardContract();
-  
-  return useContractWrite({
+export const useRequestFinancing = () => {
+  return useWriteContract({
     address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
+    abi: contractABI,
     functionName: 'requestFinancing',
   });
-}
+};
 
-export function useApproveFinancing() {
-  const { contract } = useChainGuardContract();
-  
-  return useContractWrite({
+export const useSubmitSupplyChainData = () => {
+  return useWriteContract({
     address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
-    functionName: 'approveFinancing',
+    abi: contractABI,
+    functionName: 'recordSupplyChainEvent',
   });
-}
+};
 
-export function useFundRequest() {
-  const { contract } = useChainGuardContract();
-  
-  return useContractWrite({
+export const useGetInvoiceAmount = (invoiceId: number) => {
+  return useReadContract({
     address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
-    functionName: 'fundRequest',
-  });
-}
-
-export function useSubmitSupplyChainData() {
-  const { contract } = useChainGuardContract();
-  
-  return useContractWrite({
-    address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
-    functionName: 'submitSupplyChainData',
-  });
-}
-
-export function useVerifySupplyChain() {
-  const { contract } = useChainGuardContract();
-  
-  return useContractWrite({
-    address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
-    functionName: 'verifySupplyChain',
-  });
-}
-
-export function useInvoiceInfo(invoiceId: number) {
-  return useContractRead({
-    address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
-    functionName: 'getInvoiceInfo',
+    abi: contractABI,
+    functionName: 'getInvoiceAmount',
     args: [BigInt(invoiceId)],
   });
-}
+};
 
-export function useFinancingRequestInfo(requestId: number) {
-  return useContractRead({
+export const useGetInvoiceStatus = (invoiceId: number) => {
+  return useReadContract({
     address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
-    functionName: 'getFinancingRequestInfo',
-    args: [BigInt(requestId)],
+    abi: contractABI,
+    functionName: 'getInvoiceStatus',
+    args: [BigInt(invoiceId)],
   });
-}
+};
 
-export function useSupplyChainInfo(shipmentId: number) {
-  return useContractRead({
+export const useGetSupplierReputation = (supplier: `0x${string}`) => {
+  return useReadContract({
     address: CONTRACT_ADDRESS,
-    abi: ChainGuardFundingABI,
-    functionName: 'getSupplyChainInfo',
-    args: [BigInt(shipmentId)],
+    abi: contractABI,
+    functionName: 'getSupplierReputation',
+    args: [supplier],
   });
-}
+};

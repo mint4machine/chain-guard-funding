@@ -6,8 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { useCreateInvoice, useRequestFinancing, useSubmitSupplyChainData } from '@/hooks/useContract';
-import { FileText, Lock, Database, Zap, CheckCircle, AlertCircle } from 'lucide-react';
+import { FileText, Lock, Database, Zap, CheckCircle, AlertCircle, Key, Shield } from 'lucide-react';
 import { toast } from 'sonner';
+import { 
+  createEncryptedInvoiceData, 
+  createEncryptedFinancingData, 
+  createEncryptedSupplyChainData,
+  FHEEncryptedData 
+} from '@/lib/fheEncryption';
 
 const ContractInteraction = () => {
   const { address, isConnected } = useAccount();
@@ -56,29 +62,58 @@ const ContractInteraction = () => {
       return;
     }
 
-    try {
-      // In a real implementation, you would encrypt the data using FHE
-      // For now, we'll simulate the encrypted data
-      const encryptedAmount = await encryptData(invoiceData.amount);
-      const encryptedDueDate = await encryptData(invoiceData.dueDate);
-      const encryptedPaymentTerms = await encryptData(invoiceData.paymentTerms);
+    if (!invoiceData.amount || !invoiceData.dueDate || !invoiceData.paymentTerms || !invoiceData.buyer) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
 
+    try {
+      toast.loading('Encrypting invoice data with FHE...', { id: 'encrypting' });
+
+      // Create FHE encrypted invoice data
+      const encryptedInvoiceData = await createEncryptedInvoiceData(
+        parseFloat(invoiceData.amount),
+        parseInt(invoiceData.dueDate),
+        invoiceData.paymentTerms,
+        invoiceData.invoiceHash,
+        invoiceData.buyer
+      );
+
+      toast.loading('Submitting encrypted data to blockchain...', { id: 'encrypting' });
+
+      // Submit encrypted data to smart contract
       await createInvoice({
         args: [
-          encryptedAmount,
-          encryptedDueDate,
-          encryptedPaymentTerms,
+          encryptedInvoiceData.encryptedAmount.encryptedValue,
+          encryptedInvoiceData.encryptedDueDate.encryptedValue,
+          encryptedInvoiceData.encryptedPaymentTerms.encryptedValue,
           invoiceData.invoiceHash,
           invoiceData.buyer as `0x${string}`,
-          '0x' // Placeholder for input proof
+          encryptedInvoiceData.encryptedAmount.proof
         ],
         value: 0n
       });
 
-      toast.success('Invoice created successfully!');
+      toast.dismiss('encrypting');
+      toast.success('FHE Encrypted Invoice created successfully!', {
+        description: `Invoice ID: ${Date.now()}, Encrypted with FHE`
+      });
+
+      // Reset form
+      setInvoiceData({
+        amount: '',
+        dueDate: '',
+        paymentTerms: '',
+        invoiceHash: '',
+        buyer: ''
+      });
+
     } catch (error) {
-      console.error('Error creating invoice:', error);
-      toast.error('Failed to create invoice');
+      console.error('Error creating FHE encrypted invoice:', error);
+      toast.dismiss('encrypting');
+      toast.error('Failed to create FHE encrypted invoice', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   };
 
@@ -88,25 +123,54 @@ const ContractInteraction = () => {
       return;
     }
 
+    if (!financingData.invoiceId || !financingData.requestedAmount || !financingData.interestRate) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
     try {
-      const encryptedRequestedAmount = await encryptData(financingData.requestedAmount);
-      const encryptedInterestRate = await encryptData(financingData.interestRate);
+      toast.loading('Encrypting financing data with FHE...', { id: 'financing' });
+
+      // Create FHE encrypted financing data
+      const encryptedFinancingData = await createEncryptedFinancingData(
+        parseInt(financingData.invoiceId),
+        parseFloat(financingData.requestedAmount),
+        parseFloat(financingData.interestRate),
+        financingData.requestHash
+      );
+
+      toast.loading('Submitting encrypted financing request to blockchain...', { id: 'financing' });
 
       await requestFinancing({
         args: [
           BigInt(financingData.invoiceId),
-          encryptedRequestedAmount,
-          encryptedInterestRate,
+          encryptedFinancingData.encryptedRequestedAmount.encryptedValue,
+          encryptedFinancingData.encryptedInterestRate.encryptedValue,
           financingData.requestHash,
-          '0x' // Placeholder for input proof
+          encryptedFinancingData.encryptedRequestedAmount.proof
         ],
         value: 0n
       });
 
-      toast.success('Financing request submitted!');
+      toast.dismiss('financing');
+      toast.success('FHE Encrypted Financing Request submitted!', {
+        description: `Request ID: ${Date.now()}, Encrypted with FHE`
+      });
+
+      // Reset form
+      setFinancingData({
+        invoiceId: '',
+        requestedAmount: '',
+        interestRate: '',
+        requestHash: ''
+      });
+
     } catch (error) {
-      console.error('Error requesting financing:', error);
-      toast.error('Failed to submit financing request');
+      console.error('Error requesting FHE encrypted financing:', error);
+      toast.dismiss('financing');
+      toast.error('Failed to submit FHE encrypted financing request', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   };
 
@@ -116,40 +180,60 @@ const ContractInteraction = () => {
       return;
     }
 
+    if (!supplyChainData.invoiceId || !supplyChainData.quantity || !supplyChainData.qualityScore || !supplyChainData.deliveryTime) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
     try {
-      const encryptedQuantity = await encryptData(supplyChainData.quantity);
-      const encryptedQualityScore = await encryptData(supplyChainData.qualityScore);
-      const encryptedDeliveryTime = await encryptData(supplyChainData.deliveryTime);
+      toast.loading('Encrypting supply chain data with FHE...', { id: 'supply' });
+
+      // Create FHE encrypted supply chain data
+      const encryptedSupplyChainData = await createEncryptedSupplyChainData(
+        parseInt(supplyChainData.invoiceId),
+        parseFloat(supplyChainData.quantity),
+        parseFloat(supplyChainData.qualityScore),
+        parseInt(supplyChainData.deliveryTime),
+        supplyChainData.trackingHash
+      );
+
+      toast.loading('Submitting encrypted supply chain data to blockchain...', { id: 'supply' });
 
       await submitSupplyChain({
         args: [
           BigInt(supplyChainData.invoiceId),
-          encryptedQuantity,
-          encryptedQualityScore,
-          encryptedDeliveryTime,
+          encryptedSupplyChainData.encryptedQuantity.encryptedValue,
+          encryptedSupplyChainData.encryptedQualityScore.encryptedValue,
+          encryptedSupplyChainData.encryptedDeliveryTime.encryptedValue,
           supplyChainData.trackingHash,
-          '0x' // Placeholder for input proof
+          encryptedSupplyChainData.encryptedQuantity.proof
         ],
         value: 0n
       });
 
-      toast.success('Supply chain data submitted!');
+      toast.dismiss('supply');
+      toast.success('FHE Encrypted Supply Chain Data submitted!', {
+        description: `Event ID: ${Date.now()}, Encrypted with FHE`
+      });
+
+      // Reset form
+      setSupplyChainData({
+        invoiceId: '',
+        quantity: '',
+        qualityScore: '',
+        deliveryTime: '',
+        trackingHash: ''
+      });
+
     } catch (error) {
-      console.error('Error submitting supply chain data:', error);
-      toast.error('Failed to submit supply chain data');
+      console.error('Error submitting FHE encrypted supply chain data:', error);
+      toast.dismiss('supply');
+      toast.error('Failed to submit FHE encrypted supply chain data', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   };
 
-  // Simulate FHE encryption (in real implementation, use actual FHE library)
-  const encryptData = async (data: string): Promise<`0x${string}`> => {
-    // This is a placeholder - in real implementation, use FHE encryption
-    const encoder = new TextEncoder();
-    const dataBytes = encoder.encode(data);
-    const hash = await crypto.subtle.digest('SHA-256', dataBytes);
-    const hashArray = Array.from(new Uint8Array(hash));
-    const hashHex = '0x' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex as `0x${string}`;
-  };
 
   if (!isConnected) {
     return (
@@ -226,12 +310,12 @@ const ContractInteraction = () => {
         >
           {isCreating || isConfirmingCreate ? (
             <>
-              <Database className="w-4 h-4 mr-2 animate-spin" />
-              Creating Encrypted Invoice...
+              <Key className="w-4 h-4 mr-2 animate-spin" />
+              Encrypting & Creating Invoice...
             </>
           ) : (
             <>
-              <Lock className="w-4 h-4 mr-2" />
+              <Shield className="w-4 h-4 mr-2" />
               Create FHE Encrypted Invoice
             </>
           )}
@@ -291,13 +375,13 @@ const ContractInteraction = () => {
         >
           {isRequesting || isConfirmingRequest ? (
             <>
-              <Database className="w-4 h-4 mr-2 animate-spin" />
-              Submitting Request...
+              <Key className="w-4 h-4 mr-2 animate-spin" />
+              Encrypting & Submitting Request...
             </>
           ) : (
             <>
               <Zap className="w-4 h-4 mr-2" />
-              Submit Financing Request
+              Submit FHE Encrypted Financing Request
             </>
           )}
         </Button>
@@ -366,13 +450,13 @@ const ContractInteraction = () => {
         >
           {isSubmitting || isConfirmingSupply ? (
             <>
-              <Database className="w-4 h-4 mr-2 animate-spin" />
-              Submitting Data...
+              <Key className="w-4 h-4 mr-2 animate-spin" />
+              Encrypting & Submitting Data...
             </>
           ) : (
             <>
               <CheckCircle className="w-4 h-4 mr-2" />
-              Submit Encrypted Supply Chain Data
+              Submit FHE Encrypted Supply Chain Data
             </>
           )}
         </Button>

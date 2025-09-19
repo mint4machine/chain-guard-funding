@@ -129,7 +129,7 @@ const InvoiceFlow = () => {
           </div>
           <div className="text-center p-6 bg-trust/5 rounded-xl border border-trust/20">
             <div className="w-14 h-14 bg-gradient-trust rounded-xl flex items-center justify-center mx-auto mb-4 shadow-glow">
-              <Shield className="w-7 h-7 text-trust-foreground" />
+              <Database className="w-7 h-7 text-trust-foreground" />
             </div>
             <h4 className="text-lg font-semibold text-foreground mb-2">Smart Contracts</h4>
             <p className="text-sm text-muted-foreground">Automated compliance and execution</p>
